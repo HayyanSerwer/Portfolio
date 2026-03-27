@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useEffect,  useState, useCallback } from 'react';
 import FileWindow from './Filewindow';
 import { EXPLORER_ICONS, DESKTOP_ICONS } from './FileContent';
 
