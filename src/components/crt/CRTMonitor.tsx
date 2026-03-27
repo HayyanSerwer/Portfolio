@@ -18,7 +18,7 @@ export interface CRTMonitorProps {
 }
 
 export default function CRTMonitor({ scrollProgress, onScreenClick, zoomed, xOffset, orbitEnabled }: CRTMonitorProps) {
-  const { scene }      = useGLTF('/src/assets/crt_monitor.glb') as any;
+  const { scene }      = useGLTF('/assets/crt_monitor.glb') as any;
   const { camera, gl } = useThree();
   const groupRef       = useRef<THREE.Group>(null!);
   const scaled         = useRef(false);
@@ -134,4 +134,4 @@ export default function CRTMonitor({ scrollProgress, onScreenClick, zoomed, xOff
   );
 }
 
-useGLTF.preload('/src/assets/crt_monitor.glb');
+useGLTF.preload('/assets/crt_monitor.glb');

@@ -4,7 +4,7 @@ import { useGLTF, Environment } from '@react-three/drei';
 import { easing } from 'maath';
 import * as THREE from 'three';
 
-useGLTF.preload('/src/assets/setup.glb');
+useGLTF.preload('/assets/setup.glb');
 
 function setOpacity(obj: THREE.Object3D, opacity: number) {
   obj.traverse((child) => {
@@ -23,7 +23,7 @@ function setOpacity(obj: THREE.Object3D, opacity: number) {
 }
 
 function SetupModel({ scrollProgress }: { scrollProgress: number }) {
-  const { scene }      = useGLTF('/src/assets/setup.glb');
+  const { scene }      = useGLTF('/assets/setup.glb');
   const { camera, gl } = useThree();
   const groupRef       = useRef<THREE.Group>(null!);
   const opRef          = useRef(0);
