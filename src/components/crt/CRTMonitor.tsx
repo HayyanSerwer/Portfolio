@@ -134,4 +134,4 @@ export default function CRTMonitor({ scrollProgress, onScreenClick, zoomed, xOff
   );
 }
 
-useGLTF.preload('/assets/crt_monitor.glb');
+useGLTF.preload('/src/assets/crt_monitor.glb');
