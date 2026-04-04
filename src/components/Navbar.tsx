@@ -28,7 +28,7 @@ export default function Navbar() {
         <span className="text-[8px] tracking-[6px] text-white/20 uppercase">Portfolio · 2026</span>
       </div>
 
-      {/* Links — Home · Projects · Career · Contact */}
+      {/* Links */}
       <div className="flex gap-10 pointer-events-auto">
 
         {/* Home */}
@@ -49,7 +49,7 @@ export default function Navbar() {
           )}
         </NavLink>
 
-        {/* Projects — scroll */}
+        {/* Projects */}
         <button
           onClick={() => scrollTo('projects')}
           className="text-[9px] tracking-[4px] uppercase transition-all duration-300 relative group text-white/20 hover:text-white/50 bg-transparent border-0 cursor-pointer p-0"
@@ -58,7 +58,7 @@ export default function Navbar() {
           <span className="absolute -bottom-1.5 left-0 h-px bg-white/40 transition-all duration-300 w-0 group-hover:w-full" />
         </button>
 
-        {/* Career — scroll */}
+        {/* Career */}
         <button
           onClick={() => scrollTo('career')}
           className="text-[9px] tracking-[4px] uppercase transition-all duration-300 relative group text-white/20 hover:text-white/50 bg-transparent border-0 cursor-pointer p-0"
@@ -68,24 +68,17 @@ export default function Navbar() {
         </button>
 
         {/* Contact */}
-        <NavLink
-          to="/contact"
-          className={({ isActive }) =>
-            `text-[9px] tracking-[4px] uppercase no-underline transition-all duration-300 relative group ${
-              isActive ? 'text-white/80' : 'text-white/20 hover:text-white/50'
-            }`
-          }
+        <button
+          onClick={() => scrollTo('contact')}
+          className="text-[9px] tracking-[4px] uppercase transition-all duration-300 relative group text-white/20 hover:text-white/50 bg-transparent border-0 cursor-pointer p-0"
         >
-          {({ isActive }) => (
-            <>
-              Contact
-              <span className={`absolute -bottom-1.5 left-0 h-px bg-white/40 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </>
-          )}
-        </NavLink>
+          Contact
+          <span className="absolute -bottom-1.5 left-0 h-px bg-white/40 transition-all duration-300 w-0 group-hover:w-full" />
+        </button>
 
       </div>
 
+      {/* Availability */}
       <div className="flex items-center gap-2 pointer-events-none">
         <div className="w-1.5 h-1.5 rounded-full bg-green-500/60 animate-pulse" />
         <span className="text-[8px] tracking-[4px] text-white/15 uppercase">Available</span>
