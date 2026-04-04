@@ -41,7 +41,7 @@ export default function Navbar() {
       </div>
 
       <div className="flex gap-10 pointer-events-auto">
-        {NAV_LINKS.map(({ label, to, scroll, scrollId }) => {
+        {NAV_LINKS.map(({ label, to, scroll }) => {
           if (scroll) {
             return (
               <button

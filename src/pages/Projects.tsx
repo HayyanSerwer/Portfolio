@@ -12,6 +12,7 @@ const PROJECTS = [
     tech: ['React', 'TypeScript', 'FastAPI', 'NLTK'],
     href: 'https://github.com/HayyanSerwer/YouTube-Comment-Analyzer',
     model: '/assets/floppy_black.glb',
+    screenshot: '/assets/screenshot_0.png',
   },
   {
     id: 1,
@@ -21,6 +22,7 @@ const PROJECTS = [
     tech: ['Python', 'PyTorch', 'NumPy', 'Matplotlib'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_red.glb',
+    screenshot: '/assets/screenshot_0.png',
   },
   {
     id: 2,
@@ -30,6 +32,7 @@ const PROJECTS = [
     tech: ['React', 'FastAPI', 'NumPy', 'Joblib'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_purple.glb',
+    screenshot: '/assets/screenshot_0.png',
   },
   {
     id: 3,
@@ -39,25 +42,26 @@ const PROJECTS = [
     tech: ['Python', 'Selenium', 'BeautifulSoup', 'Tkinter'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_blue.glb',
+    screenshot: '/assets/screenshot_0.png',
   },
 ];
 
 const FAN: [number, number, number][] = [
-  [-2.2,  0.3, 0.0],
-  [-0.5,  0.6, 0.1],
-  [ 1.5,  0.6, 0.2],
-  [ 3.5,  0.1, 0.3],
+  [-4.5,  0.0, 0.0],
+  [-1.5,  0.4, 0.1],
+  [ 1.5,  0.4, 0.2],
+  [ 4.5,  0.0, 0.3],
 ];
 
 const FAN_ROT: [number, number, number][] = [
-  [0, 0,  0.21],
+  [0, 0,  0.25],
   [0, 0,  0.08],
   [0, 0, -0.08],
-  [0, 0, -0.33],
+  [0, 0, -0.25],
 ];
 
-const SCATTER_UP = 3.0;
-const ACTIVE_POS: [number, number, number] = [-1.5, -0.8, 2.0];
+// When active: floppy moves to left side of canvas
+const ACTIVE_POS: [number, number, number] = [-3.5, 0, 1.5];
 const TARGET_SIZE = 2.5;
 const LERP = 0.07;
 
@@ -73,6 +77,7 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
 }) {
   const { scene } = useGLTF(project.model) as any;
   const groupRef  = useRef<THREE.Group>(null!);
+  const opRef     = useRef<THREE.Group>(null!);
   const rotY      = useRef(0);
 
   const cloned = useMemo(() => {
@@ -105,23 +110,34 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
 
   const isActive    = activeId === project.id;
   const isHovered   = hoveredId === project.id;
-  const otherActive = activeId !== null && !isActive;
+  const isInactive  = activeId !== null && !isActive; // another disk is active
 
   useFrame((_, delta) => {
     const g = groupRef.current;
     if (!g || delta > 0.1) return;
 
-    let [tx, ty, tz] = FAN[index];
-    if (isActive)         { [tx, ty, tz] = ACTIVE_POS; }
-    else if (otherActive) { ty = FAN[index][1] + SCATTER_UP; }
-    else if (isHovered)   { ty = FAN[index][1] + 0.35; }
+    // Fade out inactive disks
+    g.traverse((child: any) => {
+      if (child.isMesh && child.material) {
+        child.material.transparent = true;
+        const targetOpacity = isInactive ? 0 : 1;
+        child.material.opacity = lerp(child.material.opacity ?? 1, targetOpacity, 0.08);
+      }
+    });
 
+    // Position
+    let [tx, ty, tz] = FAN[index];
+    if (isActive)       { [tx, ty, tz] = ACTIVE_POS; }
+    else if (isHovered) { ty = FAN[index][1] + 0.35; }
+
+    // Rotation
     let [rx, ry, rz] = FAN_ROT[index];
     if (isActive) {
-      rotY.current += delta * 1.2;
-      rx = 0.15; ry = rotY.current; rz = 0;
+      rotY.current += delta * 1.0;
+      rx = 0.1; ry = rotY.current; rz = 0;
     } else {
-      rotY.current = 0;
+      rotY.current = lerp(rotY.current, 0, 0.05);
+      ry = rotY.current;
     }
 
     g.position.x = lerp(g.position.x, tx, LERP);
@@ -131,7 +147,7 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
     g.rotation.y = lerp(g.rotation.y, ry, LERP);
     g.rotation.z = lerp(g.rotation.z, rz, LERP);
 
-    const ts = isActive ? 1.12 : isHovered ? 1.06 : 1.0;
+    const ts = isActive ? 1.15 : isHovered ? 1.06 : 1.0;
     g.scale.x = lerp(g.scale.x, ts, LERP);
     g.scale.y = lerp(g.scale.y, ts, LERP);
     g.scale.z = lerp(g.scale.z, ts, LERP);
@@ -142,11 +158,11 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
       ref={groupRef}
       position={FAN[index]}
       rotation={FAN_ROT[index]}
-      onPointerEnter={(e) => { e.stopPropagation(); onHover(project.id);  document.body.style.cursor = 'pointer'; }}
-      onPointerLeave={(e) => { e.stopPropagation(); onHover(null);        document.body.style.cursor = 'default'; }}
+      onPointerEnter={(e) => { e.stopPropagation(); if (!isInactive) { onHover(project.id); document.body.style.cursor = 'pointer'; } }}
+      onPointerLeave={(e) => { e.stopPropagation(); onHover(null); document.body.style.cursor = 'default'; }}
       onClick={(e)        => { e.stopPropagation(); onClick(project.id); }}
     >
-      <primitive object={cloned} />
+      <primitive object={cloned} ref={opRef} />
     </group>
   );
 }
@@ -179,68 +195,155 @@ function Particles() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[pos, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#ffffff" size={0.018} transparent opacity={0.12} />
+      <pointsMaterial color="#ffffff" size={0.018} transparent opacity={0.1} />
     </points>
   );
 }
 
-function ProjectCard({ project, visible }: { project: typeof PROJECTS[0] | null; visible: boolean }) {
-  if (!project) return null;
+// Cinema screen — CSS 3D overlay on the right half
+function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null; visible: boolean }) {
+  const rows = project ? [
+    { label: null,       value: project.name,              size: 18, opacity: 0.9,  mono: false, serif: true  },
+    { label: 'YEAR',     value: project.year,              size: 10, opacity: 0.35, mono: true,  serif: false },
+    { label: null,       value: '───────────────',         size: 10, opacity: 0.1,  mono: true,  serif: false },
+    { label: null,       value: project.desc,              size: 11, opacity: 0.6,  mono: false, serif: false },
+    { label: null,       value: '───────────────',         size: 10, opacity: 0.1,  mono: true,  serif: false },
+    { label: 'STACK',    value: project.tech.join(' · '),  size: 10, opacity: 0.5,  mono: true,  serif: false },
+  ] : [];
+
   return (
     <div style={{
-      position: 'absolute', right: '6%', top: '50%',
-      transform: `translateY(-50%) translateX(${visible ? '0' : '60px'})`,
+      position: 'absolute',
+      // Right half of the viewport
+      left: '45%', top: 0, right: 0, bottom: 0,
+      zIndex: 10,
+      pointerEvents: 'none',
       opacity: visible ? 1 : 0,
-      transition: 'opacity 0.35s ease, transform 0.35s ease',
-      pointerEvents: visible ? 'auto' : 'none',
-      zIndex: 10, width: 300,
-      fontFamily: '"Share Tech Mono","Courier New",monospace',
+      transition: 'opacity 0.6s ease',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
     }}>
-      <div style={{
-        background: 'rgba(3,3,3,0.97)',
-        border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3,
-        boxShadow: '0 0 40px rgba(255,255,255,0.04)', overflow: 'hidden',
-      }}>
-        <div style={{
-          background: 'rgba(0,0,0,0.8)', borderBottom: '1px solid rgba(255,255,255,0.08)',
-          padding: '7px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        }}>
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', fontWeight: 'bold' }}>● {project.name}</span>
-          <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>{project.year}</span>
-        </div>
-        <div style={{ padding: '14px 14px 12px' }}>
-          <div style={{ marginBottom: 10, fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>
-            <span>hayyan@portfolio:~$</span>
-            <span style={{ color: 'rgba(255,255,255,0.5)' }}> cat {project.name}.md</span>
-          </div>
-          <p style={{ margin: '0 0 14px', fontSize: 11, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>
-            {project.desc}
-          </p>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 10, marginBottom: 12 }}>
-            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.25)', letterSpacing: 2, marginBottom: 6 }}>STACK</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-              {project.tech.map(t => (
-                <span key={t} style={{
-                  fontSize: 9, color: 'rgba(255,255,255,0.55)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  borderRadius: 2, padding: '2px 7px',
-                }}>{t}</span>
-              ))}
+      {project && (
+        <>
+          {/* Cinema screen — the "back" */}
+          <div style={{
+            position: 'relative',
+            width: '82%',
+            maxWidth: 520,
+          }}>
+
+            {/* The screen itself */}
+            <div style={{
+              width: '100%',
+              aspectRatio: '16/10',
+              borderRadius: 6,
+              overflow: 'hidden',
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 0 60px rgba(255,255,255,0.04)',
+              position: 'relative',
+              marginBottom: 32,
+            }}>
+              {/* Screenshot */}
+              <img
+                src={project.screenshot}
+                alt={project.name}
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                  filter: 'brightness(0.55) saturate(0.8)',
+                }}
+              />
+              {/* Screen overlay vignette */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to bottom, rgba(3,3,3,0.1), rgba(3,3,3,0.5))',
+              }} />
+              {/* Scanline effect on screen */}
+              <div style={{
+                position: 'absolute', inset: 0, pointerEvents: 'none',
+                background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 3px)',
+              }} />
+            </div>
+
+            {/* Cinema rows — perspective text in front of screen */}
+            <div style={{
+              perspective: '600px',
+              perspectiveOrigin: '50% 0%',
+            }}>
+              <div style={{
+                transformStyle: 'preserve-3d',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0,
+              }}>
+                {rows.map((row, i) => {
+                  // Each row is progressively less rotated (closer to viewer = flatter)
+                  const totalRows = rows.length;
+                  const t = i / (totalRows - 1); // 0 = back row, 1 = front row
+                  const rotX = lerp(28, 4, t);   // back rows more tilted
+                  const scale = lerp(0.82, 1.0, t);
+                  const translateZ = lerp(-30, 20, t);
+
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        transform: `rotateX(${rotX}deg) translateZ(${translateZ}px) scale(${scale})`,
+                        transformOrigin: 'center top',
+                        padding: '5px 0',
+                        borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        gap: 10,
+                        transition: `opacity 0.4s ease ${i * 0.06}s, transform 0.4s ease ${i * 0.06}s`,
+                        opacity: visible ? row.opacity : 0,
+                      }}
+                    >
+                      {row.label && (
+                        <span style={{
+                          fontSize: 8,
+                          letterSpacing: '3px',
+                          color: 'rgba(255,255,255,0.3)',
+                          fontFamily: '"Share Tech Mono",monospace',
+                          flexShrink: 0,
+                          width: 42,
+                        }}>{row.label}</span>
+                      )}
+                      <span style={{
+                        fontSize: row.size,
+                        color: `rgba(255,255,255,${row.opacity})`,
+                        fontFamily: row.serif
+                          ? '"Georgia","Times New Roman",serif'
+                          : row.mono
+                          ? '"Share Tech Mono",monospace'
+                          : 'system-ui, sans-serif',
+                        fontWeight: row.serif ? 400 : 300,
+                        fontStyle: row.serif ? 'italic' : 'normal',
+                        letterSpacing: row.mono ? '1px' : '-0.01em',
+                        lineHeight: 1.5,
+                      }}>{row.value}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-          <a href={project.href} target="_blank" rel="noopener noreferrer" style={{
-            display: 'inline-block', fontSize: 10, color: 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(255,255,255,0.15)', borderRadius: 2,
-            padding: '5px 14px', textDecoration: 'none', letterSpacing: 1,
-            transition: 'border-color 0.2s, color 0.2s',
+
+          {/* ESC hint */}
+          <p style={{
+            marginTop: 28,
+            fontSize: 9, letterSpacing: '4px',
+            color: 'rgba(255,255,255,0.12)',
+            fontFamily: '"Share Tech Mono",monospace',
+            opacity: visible ? 1 : 0,
+            transition: 'opacity 0.6s ease 0.4s',
           }}>
-            → VIEW ON GITHUB
-          </a>
-        </div>
-      </div>
-      <div style={{ marginTop: 12, fontSize: 9, color: 'rgba(255,255,255,0.15)', letterSpacing: 3, textAlign: 'right' }}>
-        PRESS ESC TO CLOSE
-      </div>
+            ESC / CLICK TO GO BACK
+          </p>
+        </>
+      )}
     </div>
   );
 }
@@ -286,7 +389,7 @@ export default function ProjectsSection() {
         }
       `}</style>
 
-      {/* Same grid background as CRT hero */}
+      {/* Grid */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
         backgroundImage: `
@@ -296,7 +399,7 @@ export default function ProjectsSection() {
         backgroundSize: '80px 80px',
       }} />
 
-      {/* Same sweep line */}
+      {/* Sweep */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden', pointerEvents: 'none' }}>
         <div className="projects-sweep" />
       </div>
@@ -307,15 +410,13 @@ export default function ProjectsSection() {
         background: 'radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.7) 100%)',
       }} />
 
-
-
-      {/* Section label — left side */}
+      {/* Left label — fades out when a disk is active */}
       <div style={{
         position: 'absolute', top: '50%', left: '5%',
         transform: 'translateY(-50%)',
         pointerEvents: 'none', zIndex: 10,
         opacity: activeId === null ? 1 : 0,
-        transition: 'opacity 0.3s ease',
+        transition: 'opacity 0.4s ease',
       }}>
         <p style={{ margin: '0 0 10px', fontSize: 9, letterSpacing: '5px', color: 'rgba(255,255,255,0.25)', fontFamily: '"Share Tech Mono",monospace' }}>
           SELECTED WORKS
@@ -335,13 +436,12 @@ export default function ProjectsSection() {
         </p>
       </div>
 
-      {/* Canvas */}
+      {/* Canvas — click background to close */}
       <Canvas
         camera={{ position: [0, 0, 11], fov: 48 }}
         gl={{ alpha: true, antialias: true }}
         dpr={[1, 2]}
         style={{ position: 'absolute', inset: 0, zIndex: 2 }}
-        onClick={handleClose}
       >
         <ambientLight intensity={1.5} />
         <directionalLight position={[5,  10,  8]} intensity={2.8} color="#ffffff" />
@@ -349,6 +449,12 @@ export default function ProjectsSection() {
         <pointLight       position={[0,   4,  6]} intensity={1.6} color="#ffffff" />
 
         <Particles />
+
+        {/* Invisible background plane — catches clicks that miss disks */}
+        <mesh position={[0, 0, -2]} onClick={(e) => { e.stopPropagation(); handleClose(); }}>
+          <planeGeometry args={[100, 100]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
 
         {PROJECTS.map((p, i) => (
           <FloppyDisk
@@ -363,7 +469,8 @@ export default function ProjectsSection() {
         ))}
       </Canvas>
 
-      <ProjectCard project={activeProject} visible={activeId !== null} />
+      {/* Cinema screen overlay */}
+      <CinemaScreen project={activeProject} visible={activeId !== null} />
     </div>
   );
 }
