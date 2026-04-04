@@ -63,7 +63,7 @@ export default function CRTMonitor({ scrollProgress, onScreenClick, zoomed, xOff
 
   useEffect(() => {
     const canvas = gl.domElement;
-    const MAX    = Math.PI / 4; // 45°
+    const MAX    = Math.PI / 4;
 
     const onDown = (e: MouseEvent) => {
       if (!orbitEnabled) return;
@@ -107,7 +107,6 @@ export default function CRTMonitor({ scrollProgress, onScreenClick, zoomed, xOff
 
     if (orbitEnabled && !isDragging.current) {
       targetAngles.current.y += delta * 0.3;
-      // Wrap within ±PI so it spins continuously rather than hitting the cap
       if (targetAngles.current.y > Math.PI * 10) targetAngles.current.y -= Math.PI * 20;
     }
 
@@ -134,4 +133,4 @@ export default function CRTMonitor({ scrollProgress, onScreenClick, zoomed, xOff
   );
 }
 
-useGLTF.preload('/src/assets/crt_monitor.glb');
+useGLTF.preload('/assets/crt_monitor.glb');
