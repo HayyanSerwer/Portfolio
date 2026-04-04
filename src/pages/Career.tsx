@@ -6,7 +6,7 @@ const CAREER = [
     role: 'Fullstack Developer',
     company: 'PAYTO Technologies',
     period: '2026 - Present',
-    type: 'Full-time',
+    type: 'Part-time',
     desc: 'Building and maintaining full-stack features for a fintech platform. Working across the React frontend and Firebase backend, shipping production-grade code in a fast-moving startup environment.',
     tags: ['React', 'TypeScript', 'Firebase'],
     active: true,
