@@ -36,9 +36,7 @@ export const FILE_CONTENT: Record<string, { title: string; content: React.ReactN
           <div style={{ fontWeight: 600 }}>Programming Research Assistant - TH Aschaffenburg</div>
           <div style={{ color: '#666', fontSize: 11 }}>2025 – 2026 · NumPy, NLTK, Selenium</div>
         </div>
-        <div style={{ fontWeight: 700, fontSize: 11, letterSpacing: 1, color: '#003', marginBottom: 4 }}>EDUCATION</div>
-        <div style={{ fontWeight: 600 }}>B.Sc. Software Design International - TH Aschaffenburg</div>
-        <div style={{ color: '#666', fontSize: 11 }}>2024 – 2028</div>
+
       </div>
     ),
   },

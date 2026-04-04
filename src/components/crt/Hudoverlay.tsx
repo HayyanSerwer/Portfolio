@@ -24,7 +24,6 @@ export default function HUDOverlay({ visible }: HUDOverlayProps) {
         }
       `}</style>
 
-      {/* Top-left bracket */}
       <div style={{ position: 'absolute', top: 56, left: 28 }}>
         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
           <path d="M0 22 L0 0 L22 0" stroke="rgba(255,255,255,0.13)" strokeWidth="1.5"/>
@@ -34,7 +33,6 @@ export default function HUDOverlay({ visible }: HUDOverlayProps) {
         </p>
       </div>
 
-      {/* Top-right bracket */}
       <div style={{ position: 'absolute', top: 56, right: 28, textAlign: 'right' }}>
         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
           <path d="M44 22 L44 0 L22 0" stroke="rgba(255,255,255,0.13)" strokeWidth="1.5"/>
@@ -44,12 +42,10 @@ export default function HUDOverlay({ visible }: HUDOverlayProps) {
         </p>
       </div>
 
-      {/* Click prompt */}
       <div style={{
         position: 'absolute', bottom: 32, left: '50%',
         transform: 'translateX(-50%)', textAlign: 'center',
       }}>
-        {/* Subtle label above */}
         <p style={{
           margin: '0 0 10px',
           fontSize: 8, letterSpacing: '5px',
@@ -66,7 +62,6 @@ export default function HUDOverlay({ visible }: HUDOverlayProps) {
           background: 'rgba(255,255,255,0.05)',
           animation: 'hud-pulse 2s ease-in-out infinite',
         }}>
-          {/* Crosshair / target icon */}
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.7)" strokeWidth="1.2"/>
             <circle cx="9" cy="9" r="2.8" fill="rgba(255,255,255,0.7)"

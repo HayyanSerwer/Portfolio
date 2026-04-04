@@ -162,11 +162,10 @@ export default function Contact() {
           lineHeight: 1.8,
           maxWidth: 420,
         }}>
-          Whether it's a project, an opportunity, or just to say hello —
+          Whether it's a project, an opportunity, or just to say hello -
           reach out through any of the channels below.
         </p>
 
-        {/* Links */}
         <div style={{
           width: '100%',
           display: 'flex',

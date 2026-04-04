@@ -5,7 +5,7 @@ const CAREER = [
     id: 0,
     role: 'Fullstack Developer',
     company: 'PAYTO Technologies',
-    period: '2026 — Present',
+    period: '2026 - Present',
     type: 'Full-time',
     desc: 'Building and maintaining full-stack features for a fintech platform. Working across the React frontend and Firebase backend, shipping production-grade code in a fast-moving startup environment.',
     tags: ['React', 'TypeScript', 'Firebase'],
@@ -15,7 +15,7 @@ const CAREER = [
     id: 1,
     role: 'Programming Research Assistant',
     company: 'TH Aschaffenburg',
-    period: '2025 — Present',
+    period: '2025 - Present',
     type: 'Part-time',
     desc: 'Assisted in academic research involving NLP and data processing pipelines. Wrote automation scripts and helped process large datasets for research publications.',
     tags: ['Python', 'NumPy', 'NLTK', 'Selenium'],
@@ -25,7 +25,7 @@ const CAREER = [
     id: 3,
     role: 'Technical Writer',
     company: 'Tech4Gamers',
-    period: '2022 — 2023',
+    period: '2022 - 2023',
     type: 'Freelance',
     desc: 'Wrote in-depth technical articles, hardware reviews, and guides for a gaming-focused tech publication. Covered topics ranging from PC hardware to software optimization.',
     tags: ['Technical Writing', 'Research', 'Publishing'],
@@ -35,7 +35,7 @@ const CAREER = [
     id: 4,
     role: 'Freelance Game Developer',
     company: 'Self-employed',
-    period: '2021 — 2022',
+    period: '2021 - 2022',
     type: 'Freelance',
     desc: 'Designed and developed small indie games independently. Handled all aspects of production including game design, programming, and asset creation.',
     tags: ['Game Design', 'Programming', 'Asset Creation'],
@@ -313,14 +313,12 @@ export default function Career() {
             />
           </div>
 
-          {/* Entries */}
           {CAREER.map((entry, i) => (
             <TimelineEntry key={entry.id} entry={entry} index={i} />
           ))}
 
         </div>
 
-        {/* Bottom cap */}
         <div style={{ textAlign: 'center', marginTop: 32 }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,

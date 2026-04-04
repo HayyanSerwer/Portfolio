@@ -203,7 +203,6 @@ export default function ZoomedScreen({ visible, onClose }: ZoomedScreenProps) {
             background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 3px)',
           }} />
 
-          {/* Open file windows */}
           {openWindows.map(win => (
             <FileWindow
               key={win.id}
