@@ -22,7 +22,7 @@ const PROJECTS = [
     tech: ['Python', 'PyTorch', 'NumPy', 'Matplotlib'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_red.glb',
-    screenshot: '/assets/screenshot_0.png',
+    screenshot: '/assets/screenshot_1.png',
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ const PROJECTS = [
     tech: ['React', 'FastAPI', 'NumPy', 'Joblib'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_purple.glb',
-    screenshot: '/assets/screenshot_0.png',
+    screenshot: '/assets/screenshot_2.png',
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ const PROJECTS = [
     tech: ['Python', 'Selenium', 'BeautifulSoup', 'Tkinter'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_blue.glb',
-    screenshot: '/assets/screenshot_0.png',
+    screenshot: '/assets/screenshot_3.png',
   },
 ];
 
@@ -203,19 +203,18 @@ function Particles() {
 // Cinema screen — CSS 3D overlay on the right half
 function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null; visible: boolean }) {
   const rows = project ? [
-    { label: null,       value: project.name,              size: 18, opacity: 0.9,  mono: false, serif: true  },
-    { label: 'YEAR',     value: project.year,              size: 10, opacity: 0.35, mono: true,  serif: false },
-    { label: null,       value: '───────────────',         size: 10, opacity: 0.1,  mono: true,  serif: false },
-    { label: null,       value: project.desc,              size: 11, opacity: 0.6,  mono: false, serif: false },
-    { label: null,       value: '───────────────',         size: 10, opacity: 0.1,  mono: true,  serif: false },
-    { label: 'STACK',    value: project.tech.join(' · '),  size: 10, opacity: 0.5,  mono: true,  serif: false },
+    { label: null,       value: project.name,              size: 32, opacity: 1.0,  mono: false, serif: true  },
+    { label: 'YEAR',     value: project.year,              size: 16, opacity: 0.7,  mono: true,  serif: false },
+    { label: null,       value: '───────────────',         size: 12, opacity: 0.15, mono: true,  serif: false },
+    { label: null,       value: project.desc,              size: 16, opacity: 0.9,  mono: false, serif: false },
+    { label: null,       value: '───────────────',         size: 12, opacity: 0.15, mono: true,  serif: false },
+    { label: 'STACK',    value: project.tech.join(' · '),  size: 15, opacity: 0.85, mono: true,  serif: false },
   ] : [];
 
   return (
     <div style={{
       position: 'absolute',
-      // Right half of the viewport
-      left: '45%', top: 0, right: 0, bottom: 0,
+      left: '40%', top: 0, right: 0, bottom: 0,
       zIndex: 10,
       pointerEvents: 'none',
       opacity: visible ? 1 : 0,
@@ -224,14 +223,15 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      padding: '0 4%',
     }}>
       {project && (
         <>
           {/* Cinema screen — the "back" */}
           <div style={{
             position: 'relative',
-            width: '82%',
-            maxWidth: 520,
+            width: '100%',
+            maxWidth: 780,
           }}>
 
             {/* The screen itself */}

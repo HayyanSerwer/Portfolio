@@ -1,5 +1,6 @@
 import CRTHeroSection from '../components/crt/CRTHeroSection';
 import ProjectsSection from './Projects';
+import Career from './Career';
 
 export default function Home() {
   return (
@@ -7,6 +8,9 @@ export default function Home() {
       <CRTHeroSection />
       <div id="projects">
         <ProjectsSection />
+      </div>
+      <div id="career">
+        <Career />
       </div>
     </div>
   );
