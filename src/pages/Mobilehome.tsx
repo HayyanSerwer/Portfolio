@@ -367,7 +367,7 @@ export default function MobileHome() {
         <div className="mobile-grid" />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <p className="section-label">Get in touch</p>
-          <h2 className="section-title">Contact me.</h2>
+          <h2 className="section-title">Let's talk.<br /><em>I don't bite.</em></h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 48 }}>
             {LINKS.map(({ label, value, href }) => (
