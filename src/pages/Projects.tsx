@@ -116,7 +116,6 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
     const g = groupRef.current;
     if (!g || delta > 0.1) return;
 
-    // Fade out inactive disks
     g.traverse((child: any) => {
       if (child.isMesh && child.material) {
         child.material.transparent = true;
@@ -125,12 +124,10 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
       }
     });
 
-    // Position
     let [tx, ty, tz] = FAN[index];
     if (isActive)       { [tx, ty, tz] = ACTIVE_POS; }
     else if (isHovered) { ty = FAN[index][1] + 0.35; }
 
-    // Rotation
     let [rx, ry, rz] = FAN_ROT[index];
     if (isActive) {
       rotY.current += delta * 1.0;
@@ -227,14 +224,12 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
     }}>
       {project && (
         <>
-          {/* Cinema screen — the "back" */}
           <div style={{
             position: 'relative',
             width: '100%',
             maxWidth: 780,
           }}>
 
-            {/* The screen itself */}
             <div style={{
               width: '100%',
               aspectRatio: '16/10',
@@ -255,19 +250,16 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
                   filter: 'brightness(0.55) saturate(0.8)',
                 }}
               />
-              {/* Screen overlay vignette */}
               <div style={{
                 position: 'absolute', inset: 0,
                 background: 'linear-gradient(to bottom, rgba(3,3,3,0.1), rgba(3,3,3,0.5))',
               }} />
-              {/* Scanline effect on screen */}
               <div style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
                 background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 3px)',
               }} />
             </div>
 
-            {/* Cinema rows — perspective text in front of screen */}
             <div style={{
               perspective: '600px',
               perspectiveOrigin: '50% 0%',
@@ -279,10 +271,9 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
                 gap: 0,
               }}>
                 {rows.map((row, i) => {
-                  // Each row is progressively less rotated (closer to viewer = flatter)
                   const totalRows = rows.length;
-                  const t = i / (totalRows - 1); // 0 = back row, 1 = front row
-                  const rotX = lerp(28, 4, t);   // back rows more tilted
+                  const t = i / (totalRows - 1); 
+                  const rotX = lerp(28, 4, t);  
                   const scale = lerp(0.82, 1.0, t);
                   const translateZ = lerp(-30, 20, t);
 
@@ -389,7 +380,6 @@ export default function ProjectsSection() {
         }
       `}</style>
 
-      {/* Grid */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
         backgroundImage: `
@@ -399,18 +389,15 @@ export default function ProjectsSection() {
         backgroundSize: '80px 80px',
       }} />
 
-      {/* Sweep */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden', pointerEvents: 'none' }}>
         <div className="projects-sweep" />
       </div>
 
-      {/* Vignette */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
         background: 'radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.7) 100%)',
       }} />
 
-      {/* Left label — fades out when a disk is active */}
       <div style={{
         position: 'absolute', top: '50%', left: '5%',
         transform: 'translateY(-50%)',
@@ -436,7 +423,6 @@ export default function ProjectsSection() {
         </p>
       </div>
 
-      {/* Canvas — click background to close */}
       <Canvas
         camera={{ position: [0, 0, 11], fov: 48 }}
         gl={{ alpha: true, antialias: true }}
@@ -450,7 +436,6 @@ export default function ProjectsSection() {
 
         <Particles />
 
-        {/* Invisible background plane — catches clicks that miss disks */}
         <mesh position={[0, 0, -2]} onClick={(e) => { e.stopPropagation(); handleClose(); }}>
           <planeGeometry args={[100, 100]} />
           <meshBasicMaterial transparent opacity={0} depthWrite={false} />

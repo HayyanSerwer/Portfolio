@@ -57,7 +57,6 @@ export default function CRTHeroSection() {
     { label: 'Contact',  to: '/contact'  },
   ];
 
-  // Screen highlight is visible when clickable and not yet clicked
   const screenClickable = scrollProgress > 0.88 && shiftProgress < 0.1 && !zoomed;
 
   return (
