@@ -1,7 +1,6 @@
-import { Suspense, useRef } from 'react';
+import { Suspense, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
-import { easing } from 'maath';
 import * as THREE from 'three';
 import { createScreenTexture } from '../components/crt/Screentexture';
 
@@ -82,40 +81,46 @@ const LINKS = [
   { label: 'Twitter',  value: '@serwerhayyan',                    href: 'https://twitter.com/serwerhayyan' },
 ];
 
-// Rotating CRT monitor — non-interactive
 function RotatingCRT() {
-  const { scene }  = useGLTF('/assets/crt_monitor.glb') as any;
-  const groupRef   = useRef<THREE.Group>(null!);
-  const screenTex  = createScreenTexture();
-  const scaled     = useRef(false);
+  const { scene: rawScene } = useGLTF('/assets/crt_monitor.glb') as any;
+  const groupRef = useRef<THREE.Group>(null!);
+  const screenTex = useMemo(() => createScreenTexture(), []);
 
-  if (!scaled.current && groupRef.current) {
-    scaled.current = true;
-    const box    = new THREE.Box3().setFromObject(scene);
+  const scene = useMemo(() => {
+    const clone = rawScene.clone(true);
+    clone.traverse((child: THREE.Object3D) => {
+      const mesh = child as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const n = mesh.name.toLowerCase();
+      if (n.includes('glass') || n.includes('screen') || n.includes('monitor_glass')) {
+        mesh.material = new THREE.MeshStandardMaterial({
+          map: screenTex,
+          emissiveMap: screenTex,
+          emissive: new THREE.Color(0x88bbff),
+          emissiveIntensity: 0.5, roughness: 0.1, metalness: 0.0,
+        });
+      }
+    });
+    const box    = new THREE.Box3().setFromObject(clone);
     const size   = box.getSize(new THREE.Vector3());
     const centre = box.getCenter(new THREE.Vector3());
-    scene.position.sub(centre);
+    clone.position.sub(centre);
     const s = 4.0 / Math.max(size.x, size.y, size.z);
-    groupRef.current.scale.setScalar(s);
-  }
+    clone.scale.setScalar(s);
+    return clone;
+  }, [rawScene, screenTex]);
 
-  scene.traverse((child: THREE.Object3D) => {
-    const mesh = child as THREE.Mesh;
-    if (!mesh.isMesh) return;
-    const n = mesh.name.toLowerCase();
-    if (n.includes('glass') || n.includes('screen') || n.includes('monitor_glass')) {
-      mesh.material = new THREE.MeshStandardMaterial({
-        map: screenTex, emissiveMap: screenTex,
-        emissive: new THREE.Color(0x88bbff),
-        emissiveIntensity: 0.5, roughness: 0.1, metalness: 0.0,
-      });
-    }
-  });
+  const initialized = useRef(false);
 
   useFrame((_, delta) => {
     const g = groupRef.current;
     if (!g) return;
-    easing.dampE(g.rotation, [0.1, g.rotation.y + delta * 1.2, 0], 0.1, delta);
+    if (!initialized.current) {
+      g.rotation.y = Math.PI;
+      g.position.y = -2.2;
+      initialized.current = true;
+    }
+    g.rotation.y += delta * 1.2;
   });
 
   return (
@@ -227,9 +232,9 @@ export default function MobileHome() {
         <div className="mobile-grid" />
 
         {/* CRT Canvas */}
-        <div style={{ width: '100%', height: '70vw', maxHeight: 420, position: 'relative' }}>
+        <div style={{ width: '100%', height: '80vw', maxHeight: 480, position: 'relative', marginTop: 20 }}>
           <Canvas
-            camera={{ position: [0, 0.3, 8], fov: 42 }}
+            camera={{ position: [0, 0, 8], fov: 42 }}
             gl={{ alpha: true, antialias: true }}
             dpr={[1, 2]}
             style={{ width: '100%', height: '100%', background: 'transparent' }}
@@ -267,7 +272,6 @@ export default function MobileHome() {
           <p style={{ margin: '0 0 20px', fontSize: 10, color: 'rgba(255,255,255,0.2)', lineHeight: 1.7 }}>
             B.Sc. Software Design · TH Aschaffenburg
           </p>
-          {/* Tech stack pills */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {['React', 'TypeScript', 'FastAPI', 'Node', 'PostgreSQL', 'PyTorch', 'Three.js'].map(t => (
               <span key={t} style={{
