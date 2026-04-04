@@ -59,7 +59,6 @@ export default function CRTHeroSection() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const screenClickable = scrollProgress > 0.88 && shiftProgress < 0.1 && !zoomed;
 
   return (
     <>
@@ -143,7 +142,6 @@ export default function CRTHeroSection() {
             backgroundSize: '80px 80px',
           }} />
 
-          {/* Sweep line */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden', pointerEvents: 'none' }}>
             <div className="crt-sweep-inner" />
           </div>
@@ -183,37 +181,6 @@ export default function CRTHeroSection() {
             </Canvas>
           </div>
 
-          <div
-            style={{
-              position: 'absolute',
-              left: '50%', top: '48%',
-              transform: 'translate(-50%, -50%)',
-              width: 220, height: 170,
-              borderRadius: 4,
-              zIndex: 5,
-              pointerEvents: 'none',
-              opacity: screenClickable ? 1 : 0,
-              transition: 'opacity 0.8s ease',
-              animation: screenClickable ? 'screen-ring-pulse 1.6s ease-in-out infinite' : 'none',
-            }}
-          >
-            {[
-              { top: -8, left: -8,  borderTop: '2px solid', borderLeft: '2px solid'  },
-              { top: -8, right: -8, borderTop: '2px solid', borderRight: '2px solid' },
-              { bottom: -8, left: -8,  borderBottom: '2px solid', borderLeft: '2px solid'  },
-              { bottom: -8, right: -8, borderBottom: '2px solid', borderRight: '2px solid' },
-            ].map((style, i) => (
-              <div key={i} style={{
-                position: 'absolute',
-                width: 16, height: 16,
-                borderColor: 'rgba(160,210,255,0.9)',
-                borderRadius: 1,
-                animation: `screen-corner-pulse 1.6s ease-in-out ${i * 0.1}s infinite`,
-                ...style,
-              }} />
-            ))}
-          </div>
-
           <HUDOverlay visible={scrollProgress > 0.85 && shiftProgress < 0.1} />
 
           <div style={{
@@ -246,12 +213,13 @@ export default function CRTHeroSection() {
           </div>
 
           <div style={{
-            position: 'absolute', top: '50%', right: '3%',
+            position: 'absolute', top: '50%', right: 0,
             transform: 'translateY(-50%)',
             pointerEvents: 'none', zIndex: 10,
             opacity: shiftProgress < 0.2 ? 1 : 0,
             transition: 'opacity 0.4s ease',
-            width: '38vw', maxWidth: 600, textAlign: 'right',
+            width: '35%', textAlign: 'right',
+            paddingRight: '3%',
           }}>
             <p style={{ margin: '0 0 16px', fontSize: 10, letterSpacing: '5px', color: 'rgba(255,255,255,0.4)', fontFamily: '"Share Tech Mono",monospace' }}>
               STACK
@@ -329,13 +297,11 @@ export default function CRTHeroSection() {
             </div>
           </div>
 
-          {/* ── Right callout lines + status panel (phase 2) ── */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 9, pointerEvents: 'none',
             opacity: shiftProgress > 0.3 ? 1 : 0,
             transition: 'opacity 0.5s ease',
           }}>
-            {/* SVG lines from monitor to labels */}
             <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
               <line x1="62%" y1="35%" x2="72%" y2="28%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
               <line x1="72%" y1="28%" x2="92%" y2="28%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
@@ -348,7 +314,6 @@ export default function CRTHeroSection() {
               <circle cx="92%" cy="68%" r="2" fill="rgba(255,255,255,0.25)"/>
             </svg>
 
-            {/* Status blocks */}
             <div style={{ position: 'absolute', top: 'calc(28% - 28px)', right: '6%', textAlign: 'right' }}>
               <p style={{ margin: '0 0 5px', fontSize: 9, letterSpacing: '4px', color: 'rgba(255,255,255,0.5)', fontFamily: '"Share Tech Mono",monospace' }}>CURRENT ROLE</p>
               <p style={{ margin: '0 0 2px', fontSize: 12, color: 'rgba(255,255,255,0.75)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>Research Assistant @ TH Aschaffenburg</p>
@@ -368,7 +333,6 @@ export default function CRTHeroSection() {
             </div>
           </div>
 
-          {/* ── Scroll hint ── */}
           <div style={{
             position: 'absolute', bottom: '6%', left: '50%',
             transform: 'translateX(-50%)',
