@@ -69,7 +69,6 @@ export default function CRTLoadingScreen({ onComplete }: CRTLoadingScreenProps) 
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       opacity: exiting ? 0 : 1,
       transition: exiting ? 'opacity 0.5s ease' : 'none',
-      // keep background solid during exit so nothing flashes through
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');

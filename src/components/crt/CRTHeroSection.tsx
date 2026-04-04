@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { useNavigate } from 'react-router-dom';
 import CRTMonitor       from './CRTMonitor';
 import SceneLighting    from './Screenlighting';
 import HUDOverlay       from './Hudoverlay';
@@ -14,7 +13,6 @@ export default function CRTHeroSection() {
   const [zoomedVisible,  setZoomedVisible]  = useState(false);
   const [loaded,         setLoaded]         = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const navigate   = useNavigate();
 
   useEffect(() => {
     const onScroll = () => {
@@ -52,10 +50,14 @@ export default function CRTHeroSection() {
   }, []);
 
   const navLinks = [
-    { label: 'About',    to: '/about'    },
-    { label: 'Projects', to: '/projects' },
-    { label: 'Contact',  to: '/contact'  },
+    { label: 'Projects', id: 'projects' },
+    { label: 'Career',   id: 'career'   },
+    { label: 'Contact',  id: 'contact'  },
   ];
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const screenClickable = scrollProgress > 0.88 && shiftProgress < 0.1 && !zoomed;
 
@@ -132,7 +134,6 @@ export default function CRTHeroSection() {
       >
         <div style={{ position: 'sticky', top: 0, height: '100vh', background: '#030303', overflow: 'hidden' }}>
 
-          {/* Grid bg */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
             backgroundImage: `
@@ -163,7 +164,6 @@ export default function CRTHeroSection() {
             </span>
           </div>
 
-          {/* Canvas */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
             <Canvas
               camera={{ position: [0, 0, 8], fov: 42 }}
@@ -183,13 +183,12 @@ export default function CRTHeroSection() {
             </Canvas>
           </div>
 
-    
           <div
             style={{
               position: 'absolute',
               left: '50%', top: '48%',
               transform: 'translate(-50%, -50%)',
-              width: 210, height: 190,
+              width: 220, height: 170,
               borderRadius: 4,
               zIndex: 5,
               pointerEvents: 'none',
@@ -223,7 +222,7 @@ export default function CRTHeroSection() {
             pointerEvents: 'none', zIndex: 10,
             opacity: shiftProgress < 0.2 ? 1 : 0,
             transition: 'opacity 0.4s ease',
-            maxWidth: 220,
+            maxWidth: 240,
           }}>
             <p style={{ margin: '0 0 10px', fontSize: 9, letterSpacing: '5px', color: 'rgba(255,255,255,0.25)', fontFamily: '"Share Tech Mono",monospace' }}>
               HAYYAN SERWER
@@ -235,36 +234,59 @@ export default function CRTHeroSection() {
               fontFamily: '"Georgia","Times New Roman",serif',
               lineHeight: 1.2, letterSpacing: '-0.02em',
             }}>
-              Full-Stack<br /><em style={{ fontWeight: 300 }}>Developer.</em>
+              Undergraduate<br /><em style={{ fontWeight: 300 }}>Software Student.</em>
             </h2>
             <div style={{ width: 32, height: 1, background: 'rgba(255,255,255,0.15)', marginBottom: 14 }} />
             <p style={{ margin: '0 0 6px', fontSize: 11, color: 'rgba(255,255,255,0.35)', fontFamily: '"Share Tech Mono",monospace', lineHeight: 1.7 }}>
               Based in Aschaffenburg,<br />Germany
             </p>
             <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.2)', fontFamily: '"Share Tech Mono",monospace', lineHeight: 1.7 }}>
-              B.Sc. Software Design<br />TH Aschaffenburg
+              Currently a Full Stack Developer<br />@ PAYTO Technologies
             </p>
           </div>
 
           <div style={{
-            position: 'absolute', top: '50%', right: '5%',
+            position: 'absolute', top: '50%', right: '3%',
             transform: 'translateY(-50%)',
             pointerEvents: 'none', zIndex: 10,
             opacity: shiftProgress < 0.2 ? 1 : 0,
             transition: 'opacity 0.4s ease',
-            maxWidth: 200, textAlign: 'right',
+            width: '38vw', maxWidth: 600, textAlign: 'right',
           }}>
-            <p style={{ margin: '0 0 10px', fontSize: 9, letterSpacing: '5px', color: 'rgba(255,255,255,0.25)', fontFamily: '"Share Tech Mono",monospace' }}>
+            <p style={{ margin: '0 0 16px', fontSize: 10, letterSpacing: '5px', color: 'rgba(255,255,255,0.4)', fontFamily: '"Share Tech Mono",monospace' }}>
               STACK
             </p>
-            {['React · TypeScript', 'FastAPI · Node', 'PostgreSQL', 'PyTorch · TensorFlow', 'Three.js · WebGL'].map((line, i) => (
-              <p key={i} style={{ margin: '0 0 4px', fontSize: 11, color: i === 0 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.18)', fontFamily: '"Share Tech Mono",monospace', lineHeight: 1.7 }}>
-                {line}
-              </p>
+
+            {[
+              { label: 'LANGUAGES',  items: 'TypeScript · JavaScript · Python · C/C++ · Java' },
+              { label: 'FRAMEWORKS', items: 'React · Nest.js · FastAPI · Node.js · Express · Tailwind' },
+              { label: 'AI / ML',    items: 'LangChain · RAG · LangGraph · PyTorch · TensorFlow' },
+              { label: 'BACKEND',    items: 'REST APIs · WebSockets · JWT/OAuth · PostgreSQL' },
+              { label: 'CLOUD',      items: 'Firebase · Vercel · Supabase' },
+            ].map(({ label, items }, i) => (
+              <div key={i} style={{ marginBottom: 14 }}>
+                <p style={{
+                  margin: '0 0 4px', fontSize: 9, letterSpacing: '4px',
+                  color: 'rgba(255,255,255,0.35)',
+                  fontFamily: '"Share Tech Mono",monospace',
+                }}>
+                  {label}
+                </p>
+                <p style={{
+                  margin: 0, fontSize: 'clamp(11px, 1.4vw, 16px)',
+                  color: i === 0 ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.55)',
+                  fontFamily: '"Share Tech Mono",monospace',
+                  lineHeight: 1.5,
+                  wordBreak: 'break-word',
+                }}>
+                  {items}
+                </p>
+              </div>
             ))}
-            <div style={{ width: 32, height: 1, background: 'rgba(255,255,255,0.15)', margin: '14px 0 14px auto' }} />
-            <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: '"Share Tech Mono",monospace' }}>
-              Available for work · <span style={{ color: 'rgba(100,220,100,0.6)' }}>●</span>
+
+            <div style={{ width: 32, height: 1, background: 'rgba(255,255,255,0.15)', margin: '16px 0 16px auto' }} />
+            <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.4)', fontFamily: '"Share Tech Mono",monospace' }}>
+              Available for work · <span style={{ color: 'rgba(100,220,100,0.7)' }}>●</span>
             </p>
           </div>
 
@@ -289,8 +311,8 @@ export default function CRTHeroSection() {
               Explore the<br /><em style={{ fontWeight: 300 }}>rest.</em>
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {navLinks.map(({ label, to }) => (
-                <button key={to} className="nav-link-btn" onClick={() => navigate(to)}>
+              {navLinks.map(({ label, id }) => (
+                <button key={id} className="nav-link-btn" onClick={() => scrollTo(id)}>
                   {label} →
                 </button>
               ))}
@@ -307,36 +329,46 @@ export default function CRTHeroSection() {
             </div>
           </div>
 
+          {/* ── Right callout lines + status panel (phase 2) ── */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 9, pointerEvents: 'none',
             opacity: shiftProgress > 0.3 ? 1 : 0,
             transition: 'opacity 0.5s ease',
           }}>
+            {/* SVG lines from monitor to labels */}
             <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
-              <line x1="62%" y1="38%" x2="72%" y2="28%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
+              <line x1="62%" y1="35%" x2="72%" y2="28%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
               <line x1="72%" y1="28%" x2="92%" y2="28%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
-              <line x1="62%" y1="48%" x2="72%" y2="48%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
-              <line x1="72%" y1="48%" x2="92%" y2="48%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
-              <line x1="62%" y1="58%" x2="72%" y2="63%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
-              <line x1="72%" y1="63%" x2="92%" y2="63%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
+              <line x1="62%" y1="50%" x2="72%" y2="50%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
+              <line x1="72%" y1="50%" x2="92%" y2="50%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
+              <line x1="62%" y1="65%" x2="72%" y2="68%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
+              <line x1="72%" y1="68%" x2="92%" y2="68%" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
               <circle cx="92%" cy="28%" r="2" fill="rgba(255,255,255,0.25)"/>
-              <circle cx="92%" cy="48%" r="2" fill="rgba(255,255,255,0.25)"/>
-              <circle cx="92%" cy="63%" r="2" fill="rgba(255,255,255,0.25)"/>
+              <circle cx="92%" cy="50%" r="2" fill="rgba(255,255,255,0.25)"/>
+              <circle cx="92%" cy="68%" r="2" fill="rgba(255,255,255,0.25)"/>
             </svg>
-            <div style={{ position: 'absolute', top: 'calc(28% - 22px)', right: '6%', textAlign: 'right' }}>
-              <p style={{ margin: 0, fontSize: 9, letterSpacing: '3px', color: 'rgba(255,255,255,0.25)', fontFamily: '"Share Tech Mono",monospace' }}>TECH STACK</p>
-              <p style={{ margin: '2px 0 0', fontSize: 12, color: 'rgba(255,255,255,0.55)', fontFamily: '"Georgia",serif' }}>React · Three.js · FastAPI</p>
+
+            {/* Status blocks */}
+            <div style={{ position: 'absolute', top: 'calc(28% - 28px)', right: '6%', textAlign: 'right' }}>
+              <p style={{ margin: '0 0 5px', fontSize: 9, letterSpacing: '4px', color: 'rgba(255,255,255,0.5)', fontFamily: '"Share Tech Mono",monospace' }}>CURRENT ROLE</p>
+              <p style={{ margin: '0 0 2px', fontSize: 12, color: 'rgba(255,255,255,0.75)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>Research Assistant @ TH Aschaffenburg</p>
+              <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>Full Stack Developer @ PAYTO</p>
             </div>
-            <div style={{ position: 'absolute', top: 'calc(48% - 22px)', right: '6%', textAlign: 'right' }}>
-              <p style={{ margin: 0, fontSize: 9, letterSpacing: '3px', color: 'rgba(255,255,255,0.25)', fontFamily: '"Share Tech Mono",monospace' }}>STATUS</p>
-              <p style={{ margin: '2px 0 0', fontSize: 12, color: 'rgba(255,255,255,0.55)', fontFamily: '"Georgia",serif' }}>Currently in development</p>
+
+            <div style={{ position: 'absolute', top: 'calc(50% - 38px)', right: '6%', textAlign: 'right' }}>
+              <p style={{ margin: '0 0 5px', fontSize: 9, letterSpacing: '4px', color: 'rgba(255,255,255,0.5)', fontFamily: '"Share Tech Mono",monospace' }}>QUICK STATS</p>
+              <p style={{ margin: '0 0 2px', fontSize: 12, color: 'rgba(255,255,255,0.75)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>Fourth Semester Student</p>
+              <p style={{ margin: '0 0 2px', fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>3 Personal Projects in Development</p>
+              <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>2 Active Roles</p>
             </div>
-            <div style={{ position: 'absolute', top: 'calc(63% - 22px)', right: '6%', textAlign: 'right' }}>
-              <p style={{ margin: 0, fontSize: 9, letterSpacing: '3px', color: 'rgba(255,255,255,0.25)', fontFamily: '"Share Tech Mono",monospace' }}>LEARNING</p>
-              <p style={{ margin: '2px 0 0', fontSize: 12, color: 'rgba(255,255,255,0.55)', fontFamily: '"Georgia",serif' }}>WebGL · Rust · DevOps</p>
+
+            <div style={{ position: 'absolute', top: 'calc(68% - 22px)', right: '6%', textAlign: 'right' }}>
+              <p style={{ margin: '0 0 5px', fontSize: 9, letterSpacing: '4px', color: 'rgba(255,255,255,0.5)', fontFamily: '"Share Tech Mono",monospace' }}>LOCATION</p>
+              <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.75)', fontFamily: '"Georgia",serif', fontStyle: 'italic' }}>Frankfurt/Rhine-Main Metropolitan Region</p>
             </div>
           </div>
 
+          {/* ── Scroll hint ── */}
           <div style={{
             position: 'absolute', bottom: '6%', left: '50%',
             transform: 'translateX(-50%)',

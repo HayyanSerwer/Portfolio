@@ -13,6 +13,7 @@ const PROJECTS = [
     href: 'https://github.com/HayyanSerwer/YouTube-Comment-Analyzer',
     model: '/assets/floppy_black.glb',
     screenshot: '/assets/screenshot_0.png',
+    code: null,
   },
   {
     id: 1,
@@ -23,6 +24,7 @@ const PROJECTS = [
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_red.glb',
     screenshot: '/assets/screenshot_1.png',
+    code: null,
   },
   {
     id: 2,
@@ -33,6 +35,7 @@ const PROJECTS = [
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_purple.glb',
     screenshot: '/assets/screenshot_2.png',
+    code: null,
   },
   {
     id: 3,
@@ -42,7 +45,26 @@ const PROJECTS = [
     tech: ['Python', 'Selenium', 'BeautifulSoup', 'Tkinter'],
     href: 'https://github.com/HayyanSerwer',
     model: '/assets/floppy_blue.glb',
-    screenshot: '/assets/screenshot_3.png',
+    screenshot: null,
+    code: [
+      { t: 'kw', v: 'def ' },     { t: 'fn', v: 'scrape_jobs' }, { t: 'pl', v: '(keyword, location, pages=' }, { t: 'nm', v: '3' }, { t: 'pl', v: '):' },
+      { t: 'kw', v: '    driver' }, { t: 'pl', v: '.get(' }, { t: 'st', v: 'f"https://indeed.com/jobs?q={keyword}&l={location}"' }, { t: 'pl', v: ')' },
+      { t: 'pl', v: '' },
+      { t: 'kw', v: '    for' }, { t: 'pl', v: ' _ ' }, { t: 'kw', v: 'in' }, { t: 'pl', v: ' range(pages):' },
+      { t: 'pl', v: '        jobs = driver.find_elements(By.CLASS_NAME, ' }, { t: 'st', v: '"job_seen_beacon"' }, { t: 'pl', v: ')' },
+      { t: 'kw', v: '        for' }, { t: 'pl', v: ' job ' }, { t: 'kw', v: 'in' }, { t: 'pl', v: ' jobs:' },
+      { t: 'pl', v: '            title   = job.find_element(By.CLASS_NAME, ' }, { t: 'st', v: '"jobTitle"' }, { t: 'pl', v: ').text' },
+      { t: 'pl', v: '            company = job.find_element(By.CLASS_NAME, ' }, { t: 'st', v: '"companyName"' }, { t: 'pl', v: ').text' },
+      { t: 'pl', v: '            results.append({ ' }, { t: 'st', v: '"title"' }, { t: 'pl', v: ': title, ' }, { t: 'st', v: '"company"' }, { t: 'pl', v: ': company })' },
+      { t: 'pl', v: '' },
+      { t: 'kw', v: '        try:' },
+      { t: 'pl', v: '            driver.find_element(By.ARIA_LABEL, ' }, { t: 'st', v: '"Next Page"' }, { t: 'pl', v: ').click()' },
+      { t: 'pl', v: '            time.sleep(random.uniform(' }, { t: 'nm', v: '1.5' }, { t: 'pl', v: ', ' }, { t: 'nm', v: '3.0' }, { t: 'pl', v: '))' },
+      { t: 'kw', v: '        except' }, { t: 'pl', v: ' NoSuchElementException:' },
+      { t: 'kw', v: '            break' },
+      { t: 'pl', v: '' },
+      { t: 'fn', v: '    export_to_csv' }, { t: 'pl', v: '(results)' },
+    ],
   },
 ];
 
@@ -60,7 +82,6 @@ const FAN_ROT: [number, number, number][] = [
   [0, 0, -0.25],
 ];
 
-// When active: floppy moves to left side of canvas
 const ACTIVE_POS: [number, number, number] = [-3.5, 0, 1.5];
 const TARGET_SIZE = 2.5;
 const LERP = 0.07;
@@ -116,6 +137,7 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
     const g = groupRef.current;
     if (!g || delta > 0.1) return;
 
+    // Fade out inactive disks
     g.traverse((child: any) => {
       if (child.isMesh && child.material) {
         child.material.transparent = true;
@@ -124,10 +146,12 @@ function FloppyDisk({ project, index, activeId, hoveredId, onHover, onClick }: {
       }
     });
 
+    // Position
     let [tx, ty, tz] = FAN[index];
     if (isActive)       { [tx, ty, tz] = ACTIVE_POS; }
     else if (isHovered) { ty = FAN[index][1] + 0.35; }
 
+    // Rotation
     let [rx, ry, rz] = FAN_ROT[index];
     if (isActive) {
       rotY.current += delta * 1.0;
@@ -197,7 +221,6 @@ function Particles() {
   );
 }
 
-// Cinema screen — CSS 3D overlay on the right half
 function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null; visible: boolean }) {
   const rows = project ? [
     { label: null,       value: project.name,              size: 32, opacity: 1.0,  mono: false, serif: true  },
@@ -208,12 +231,21 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
     { label: 'STACK',    value: project.tech.join(' · '),  size: 15, opacity: 0.85, mono: true,  serif: false },
   ] : [];
 
+ 
+  const tokenColor = (t: string) => ({
+    kw: 'rgba(180,130,255,0.9)',   
+    fn: 'rgba(100,200,255,0.9)',   
+    st: 'rgba(100,220,120,0.9)',   
+    nm: 'rgba(255,180,80,0.9)',
+    pl: 'rgba(220,220,220,0.7)',  
+  }[t] ?? 'rgba(220,220,220,0.7)');
+
   return (
     <div style={{
       position: 'absolute',
       left: '40%', top: 0, right: 0, bottom: 0,
       zIndex: 10,
-      pointerEvents: 'none',
+      pointerEvents: visible ? 'auto' : 'none',
       opacity: visible ? 1 : 0,
       transition: 'opacity 0.6s ease',
       display: 'flex',
@@ -224,11 +256,7 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
     }}>
       {project && (
         <>
-          <div style={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: 780,
-          }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: 780 }}>
 
             <div style={{
               width: '100%',
@@ -238,26 +266,51 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
               boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 0 60px rgba(255,255,255,0.04)',
               position: 'relative',
               marginBottom: 32,
+              background: project.screenshot ? 'transparent' : '#0d1117',
             }}>
-              {/* Screenshot */}
-              <img
-                src={project.screenshot}
-                alt={project.name}
-                style={{
-                  width: '100%', height: '100%',
-                  objectFit: 'cover',
-                  display: 'block',
-                  filter: 'brightness(0.55) saturate(0.8)',
-                }}
-              />
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(to bottom, rgba(3,3,3,0.1), rgba(3,3,3,0.5))',
-              }} />
-              <div style={{
-                position: 'absolute', inset: 0, pointerEvents: 'none',
-                background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 3px)',
-              }} />
+              {project.screenshot ? (
+                <>
+                  <img
+                    src={project.screenshot}
+                    alt={project.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.55) saturate(0.8)' }}
+                  />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(3,3,3,0.1), rgba(3,3,3,0.5))' }} />
+                  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 3px)' }} />
+                </>
+              ) : project.code ? (
+                <>
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    padding: '20px 24px',
+                    fontFamily: '"Share Tech Mono","Courier New",monospace',
+                    fontSize: 12, lineHeight: 1.9,
+                    overflowY: 'auto',
+                  }}>
+                    {(() => {
+                      const lines: typeof project.code[] = [];
+                      let current: typeof project.code = [];
+                      for (const tok of project.code) {
+                        if (tok.v === '') { lines.push(current); current = []; }
+                        else { current.push(tok); }
+                      }
+                      if (current.length) lines.push(current);
+                      return lines.map((line, li) => (
+                        <div key={li} style={{ display: 'flex', gap: 16, minHeight: '1.9em' }}>
+                          <span style={{ color: 'rgba(255,255,255,0.15)', userSelect: 'none', flexShrink: 0, width: 20, textAlign: 'right' }}>{li + 1}</span>
+                          <span>
+                            {line.map((tok, ti) => (
+                              <span key={ti} style={{ color: tokenColor(tok.t) }}>{tok.v}</span>
+                            ))}
+                          </span>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 3px)' }} />
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(to bottom, transparent, #0d1117)' }} />
+                </>
+              ) : null}
             </div>
 
             <div style={{
@@ -273,7 +326,7 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
                 {rows.map((row, i) => {
                   const totalRows = rows.length;
                   const t = i / (totalRows - 1); 
-                  const rotX = lerp(28, 4, t);  
+                  const rotX = lerp(28, 4, t);   
                   const scale = lerp(0.82, 1.0, t);
                   const translateZ = lerp(-30, 20, t);
 
@@ -302,19 +355,41 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
                           width: 42,
                         }}>{row.label}</span>
                       )}
-                      <span style={{
-                        fontSize: row.size,
-                        color: `rgba(255,255,255,${row.opacity})`,
-                        fontFamily: row.serif
-                          ? '"Georgia","Times New Roman",serif'
-                          : row.mono
-                          ? '"Share Tech Mono",monospace'
-                          : 'system-ui, sans-serif',
-                        fontWeight: row.serif ? 400 : 300,
-                        fontStyle: row.serif ? 'italic' : 'normal',
-                        letterSpacing: row.mono ? '1px' : '-0.01em',
-                        lineHeight: 1.5,
-                      }}>{row.value}</span>
+                      {i === 0 ? (
+                        <a
+                          href={project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: row.size,
+                            color: `rgba(255,255,255,${row.opacity})`,
+                            fontFamily: '"Georgia","Times New Roman",serif',
+                            fontWeight: 400,
+                            fontStyle: 'italic',
+                            letterSpacing: '-0.01em',
+                            lineHeight: 1.5,
+                            textDecoration: 'none',
+                            borderBottom: '1px solid rgba(255,255,255,0.2)',
+                            transition: 'border-color 0.2s, color 0.2s',
+                          }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,1)'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.6)'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `rgba(255,255,255,${row.opacity})`; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)'; }}
+                        >{row.value} ↗</a>
+                      ) : (
+                        <span style={{
+                          fontSize: row.size,
+                          color: `rgba(255,255,255,${row.opacity})`,
+                          fontFamily: row.serif
+                            ? '"Georgia","Times New Roman",serif'
+                            : row.mono
+                            ? '"Share Tech Mono",monospace'
+                            : 'system-ui, sans-serif',
+                          fontWeight: row.serif ? 400 : 300,
+                          fontStyle: row.serif ? 'italic' : 'normal',
+                          letterSpacing: row.mono ? '1px' : '-0.01em',
+                          lineHeight: 1.5,
+                        }}>{row.value}</span>
+                      )}
                     </div>
                   );
                 })}
@@ -324,7 +399,7 @@ function CinemaScreen({ project, visible }: { project: typeof PROJECTS[0] | null
 
           {/* ESC hint */}
           <p style={{
-            marginTop: 28,
+            marginTop: 20,
             fontSize: 9, letterSpacing: '4px',
             color: 'rgba(255,255,255,0.12)',
             fontFamily: '"Share Tech Mono",monospace',
@@ -389,6 +464,7 @@ export default function ProjectsSection() {
         backgroundSize: '80px 80px',
       }} />
 
+      {/* Sweep */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden', pointerEvents: 'none' }}>
         <div className="projects-sweep" />
       </div>

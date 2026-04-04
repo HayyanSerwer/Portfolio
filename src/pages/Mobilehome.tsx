@@ -44,7 +44,7 @@ const CAREER = [
     id: 0,
     role: 'Fullstack Developer',
     company: 'PAYTO Technologies',
-    period: '2026 — Present',
+    period: '2026 - Present',
     type: 'Full-time',
     active: true,
   },
@@ -52,7 +52,7 @@ const CAREER = [
     id: 1,
     role: 'Programming Research Assistant',
     company: 'TH Aschaffenburg',
-    period: '2025 — Present',
+    period: '2025 - Present',
     type: 'Part-time',
     active: true,
   },
@@ -60,7 +60,7 @@ const CAREER = [
     id: 3,
     role: 'Technical Writer',
     company: 'Tech4Gamers',
-    period: '2022 — 2023',
+    period: '2022 - 2023',
     type: 'Freelance',
     active: false,
   },
@@ -68,7 +68,7 @@ const CAREER = [
     id: 4,
     role: 'Freelance Game Developer',
     company: 'Self-employed',
-    period: '2021 — 2022',
+    period: '2021 - 2022',
     type: 'Freelance',
     active: false,
   },
@@ -105,7 +105,7 @@ function RotatingCRT() {
     const size   = box.getSize(new THREE.Vector3());
     const centre = box.getCenter(new THREE.Vector3());
     clone.position.sub(centre);
-    const s = 4.0 / Math.max(size.x, size.y, size.z);
+    const s = 3.2 / Math.max(size.x, size.y, size.z);
     clone.scale.setScalar(s);
     return clone;
   }, [rawScene, screenTex]);
@@ -232,7 +232,7 @@ export default function MobileHome() {
         <div className="mobile-grid" />
 
         {/* CRT Canvas */}
-        <div style={{ width: '100%', height: '80vw', maxHeight: 480, position: 'relative', marginTop: 20 }}>
+        <div style={{ width: '100%', height: '55vw', maxHeight: 340, position: 'relative', marginTop: 20 }}>
           <Canvas
             camera={{ position: [0, 0, 8], fov: 42 }}
             gl={{ alpha: true, antialias: true }}
@@ -263,24 +263,44 @@ export default function MobileHome() {
             letterSpacing: '-0.02em',
             lineHeight: 1.15,
           }}>
-            Full-Stack<br /><em style={{ fontWeight: 300 }}>Developer.</em>
+            Undergraduate<br /><em style={{ fontWeight: 300 }}>Software Student.</em>
           </h1>
           <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.15)', marginBottom: 14 }} />
           <p style={{ margin: '0 0 6px', fontSize: 10, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7 }}>
             Based in Aschaffenburg, Germany
           </p>
-          <p style={{ margin: '0 0 20px', fontSize: 10, color: 'rgba(255,255,255,0.2)', lineHeight: 1.7 }}>
-            B.Sc. Software Design · TH Aschaffenburg
+          <p style={{ margin: '0 0 24px', fontSize: 10, color: 'rgba(255,255,255,0.2)', lineHeight: 1.7 }}>
+            Currently a Full Stack Developer @ PAYTO Technologies
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {['React', 'TypeScript', 'FastAPI', 'Node', 'PostgreSQL', 'PyTorch', 'Three.js'].map(t => (
-              <span key={t} style={{
-                fontSize: 8, letterSpacing: '2px',
-                color: 'rgba(255,255,255,0.35)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 2, padding: '3px 8px',
-                textTransform: 'uppercase',
-              }}>{t}</span>
+
+          {/* Categorized stack */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {[
+              { label: 'LANGUAGES',  items: ['TS', 'JS', 'Python', 'C/C++', 'Java'] },
+              { label: 'FRAMEWORKS', items: ['React', 'Nest.js', 'FastAPI', 'Express', 'Tailwind'] },
+              { label: 'AI / ML',    items: ['LangChain', 'RAG', 'PyTorch', 'TensorFlow'] },
+              { label: 'BACKEND',    items: ['REST', 'WebSockets', 'JWT/OAuth', 'PostgreSQL'] },
+              { label: 'CLOUD',      items: ['Firebase', 'Vercel', 'Supabase'] },
+            ].map(({ label, items }, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <p style={{
+                  margin: 0, fontSize: 7, letterSpacing: '3px',
+                  color: 'rgba(255,255,255,0.25)',
+                  fontFamily: '"Share Tech Mono",monospace',
+                  flexShrink: 0, width: 70, textAlign: 'right',
+                }}>{label}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                  {items.map(t => (
+                    <span key={t} style={{
+                      fontSize: 10, letterSpacing: '1px',
+                      color: i === 0 ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.45)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 2, padding: '3px 8px',
+                      fontFamily: '"Share Tech Mono",monospace',
+                    }}>{t}</span>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
