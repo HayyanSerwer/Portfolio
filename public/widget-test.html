@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Widget Test</title>
+    <style>
+      html, body { margin: 0; padding: 0; background: #000; min-height: 100%; }
+    </style>
+  </head>
+  <body>
+    <!-- Bot 561 lives on the dev instance, so `domain` must override the
+         bot.clye.app default the widget otherwise falls back to. -->
+    <script type="module" src="https://dev.clye.ai/widget.js"></script>
+    <clye-bot-chat bot-id="561" domain="https://dev.clye.ai"></clye-bot-chat>
+  </body>
+</html>

@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home   from './pages/Home';
 import Project from './pages/Projects'
+import WidgetTest from './pages/WidgetTest'
 
 
 
@@ -23,15 +24,24 @@ function TempAbout() {
   );
 }
 
+// The widget test bench renders bare — no nav, no site chrome.
+function ChromeAwareNavbar() {
+  const { pathname } = useLocation();
+  if (pathname === '/widget-test') return null;
+  return <Navbar />;
+}
+
 export default function App() {
   return (
     <Router>
-      <Navbar />
+      <ChromeAwareNavbar />
       <Routes>
         <Route path="/"         element={<Home />}     />
         <Route path="/about"    element={<TempAbout />}    />
         <Route path="/projects" element={<Project />} />
         <Route path="/contact"  element={<Contact />}  />
+        {/* Unlisted: internal widget test bench, not linked from anywhere */}
+        <Route path="/widget-test" element={<WidgetTest />} />
       </Routes>
     </Router>
   );
