@@ -384,7 +384,7 @@ export default function MobileHome() {
                     color: entry.active ? 'rgba(100,220,100,0.7)' : 'rgba(255,255,255,0.3)',
                     textTransform: 'uppercase',
                   }}>{entry.company}</p>
-                  <p style={{ margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.2)', letterSpacing: '2px' }}>
+                  <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.6)', letterSpacing: '2px' }}>
                     {entry.period} · {entry.type}
                   </p>
                 </div>

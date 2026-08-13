@@ -143,14 +143,14 @@ function PeriodLabel({ entry, align }: { entry: typeof CAREER[0]; align: 'left' 
     <div style={{ textAlign: align, paddingTop: 2 }}>
       <p style={{
         margin: 0,
-        fontSize: 10, letterSpacing: '4px',
-        color: 'rgba(255,255,255,0.2)',
+        fontSize: 13, letterSpacing: '3px',
+        color: 'rgba(255,255,255,0.75)',
         fontFamily: '"Share Tech Mono",monospace',
       }}>{entry.period}</p>
       <p style={{
-        margin: '6px 0 0',
-        fontSize: 9, letterSpacing: '3px',
-        color: 'rgba(255,255,255,0.12)',
+        margin: '8px 0 0',
+        fontSize: 10, letterSpacing: '2.5px',
+        color: 'rgba(255,255,255,0.42)',
         fontFamily: '"Share Tech Mono",monospace',
         textTransform: 'uppercase',
       }}>{entry.type}</p>
