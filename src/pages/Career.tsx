@@ -2,6 +2,16 @@ import { useEffect, useRef } from 'react';
 
 const CAREER = [
   {
+    id: 5,
+    role: 'Fullstack Developer',
+    company: 'CLYE GmbH',
+    period: '2026 - Present',
+    type: 'Part-time',
+    desc: 'Development of AI-powered web applications using Next.js, TypeScript, and Vercel’s AI SDK. Focused on streaming AI interactions between web apps and building production-ready deployments.',
+    tags: ['Next.js', 'TypeScript', 'Vercel AI SDK'],
+    active: true,
+  },
+  {
     id: 0,
     role: 'Fullstack Developer',
     company: 'PAYTO Technologies',
@@ -9,7 +19,7 @@ const CAREER = [
     type: 'Part-time',
     desc: 'Building and maintaining full-stack features for a fintech platform. Working across the React frontend and Firebase backend, shipping production-grade code in a fast-moving startup environment.',
     tags: ['React', 'TypeScript', 'Firebase'],
-    active: true,
+    active: false,
   },
   {
     id: 1,

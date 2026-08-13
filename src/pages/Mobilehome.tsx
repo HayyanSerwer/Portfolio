@@ -41,6 +41,14 @@ const PROJECTS = [
 
 const CAREER = [
   {
+    id: 5,
+    role: 'Fullstack Developer',
+    company: 'CLYE GmbH',
+    period: '2026 - Present',
+    type: 'Full-time',
+    active: true,
+  },
+  {
     id: 0,
     role: 'Fullstack Developer',
     company: 'PAYTO Technologies',
